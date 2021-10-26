@@ -18,7 +18,6 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cexwu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-console.log(uri);
 
 
 /* ::::::::::::::::::::::::::::::::::::::::::::
@@ -44,7 +43,7 @@ async function run() {
 ::::::::::::::::::::::::::::::::::::::::::::::*/
     app.post('/services', async(req, res) =>{
         const service = req.body;
-      console.log("hit the poost api", service);
+    //   console.log("hit the poost api", service);
 
       const result = await servicesCollection.insertOne(service);
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
@@ -99,7 +98,7 @@ async function run() {
 
 
 app.get('/', (req, res) => {
-    res.send("Server is running")
+    res.send("Genius Server is running")
 })
 
 app.listen(port , () => {
