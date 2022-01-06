@@ -7,6 +7,7 @@ var cors = require('cors')
 const { MongoClient } = require('mongodb');
 require('dotenv').config()
 const ObjectId = require('mongodb').ObjectId;
+const { response } = require('express');
 
 const app = express()
 const port = process.env.PORT || 5000;
@@ -32,20 +33,32 @@ async function run() {
     try {
 
       await client.connect();
-      console.log("Connected to database");
-      const database = client.db("carMechanic");
-      const servicesCollection = database.collection("servicesCollection");
+      console.log("Connected successfully");
+      const database = client.db("wesocial");
+
+      /* Collections */
+
+    /* Community Articles */
+    const communityPostsCollection = database.collection("communityPosts");
+    const communityPostsReplyCollection = database.collection("communityPostsReply");
+
+    /* User Status */
+    const userStatusCollection = database.collection("userStatus");
+    const userStatusRepliesCollection = database.collection("userStatusReplies");
+
+
+/* _____________________________________________________________ */
 
 
 
-/* ::::::::::::::::::::::::::::::::::::::::::::
-                Post Api on server
-::::::::::::::::::::::::::::::::::::::::::::::*/
-    app.post('/services', async(req, res) =>{
-        const service = req.body;
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                    Post Articles on server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.post('/communityPosts', async(req, res) =>{
+        const communityPosts = req.body;
     //   console.log("hit the poost api", service);
 
-      const result = await servicesCollection.insertOne(service);
+      const result = await communityPostsCollection.insertOne(communityPosts);
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
       res.json(result)
     })
@@ -53,26 +66,123 @@ async function run() {
 
 
 
-/* ::::::::::::::::::::::::::::::::::::::::::::
-            get data from server
-::::::::::::::::::::::::::::::::::::::::::::::*/
-    app.get('/services', async(req, res) => {
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                get Articles from server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/communityPosts', async(req, res) => {
 
-        const cursor = servicesCollection.find({});
-        const services = await cursor.toArray();
-        res.send(services);
+        const cursor = communityPostsCollection.find({});
+        const communityPosts = await cursor.toArray();
+        res.send(communityPosts);
 
     });
 
-/* ::::::::::::::::::::::::::::::::::::::::::::
+/* ______________________________________________________________ */
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                    Post replies on server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.post('/communityPostsReply', async(req, res) =>{
+        const communityPostsReply = req.body;
+        const result = await communityPostsReplyCollection.insertOne(communityPostsReply);
+        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        res.json(result)
+    })
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+            get replies from server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/communityPostsReply', async(req, res) => {
+
+        const cursor = communityPostsReplyCollection.find({});
+        const communityPostsReply = await cursor.toArray();
+        res.send(communityPostsReply);
+
+    });
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
             get single data from server
-::::::::::::::::::::::::::::::::::::::::::::::*/
-    app.get('/services/:id', async (req, res) => {
-        const id = req.params.id;
-        const query = {_id:ObjectId(id)};
-        const service = await servicesCollection.findOne(query);
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/communityPosts/:articleID', async (req, res) => {
+        const articleID = req.params.articleID;
+        console.log(articleID);
+        const query = {_id:ObjectId(articleID)};
+        const service = await communityPostsCollection.findOne(query);
         res.json(service);
     })
+    
+
+
+
+/* ______________________________________________________________ */
+
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                    Post Status on server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.post('/userStatus', async(req, res) =>{
+        const userStatus = req.body;
+    //   console.log("hit the poost api", service);
+
+      const result = await userStatusCollection.insertOne(userStatus);
+      console.log(`A document was inserted with the _id: ${result.insertedId}`);
+      res.json(result)
+    })
+
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                get Status from server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/userStatus', async(req, res) => {
+
+        const cursor = userStatusCollection.find({});
+        const userStatus = await cursor.toArray();
+        res.send(userStatus);
+
+    });
+
+/* ______________________________________________________________ */
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                    Post Status replies on server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.post('/communityPostsReply', async(req, res) =>{
+        const communityPostsReply = req.body;
+        const result = await communityPostsReplyCollection.insertOne(communityPostsReply);
+        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        res.json(result)
+    })
+
+
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+            get Status replies from server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/communityPostsReply', async(req, res) => {
+
+        const cursor = communityPostsReplyCollection.find({});
+        const communityPostsReply = await cursor.toArray();
+        res.send(communityPostsReply);
+
+    });
+
+/* _________________________________________________________________ */
+
+
+
+
+
+    
 
 
 /* ::::::::::::::::::::::::::::::::::::::::::::
@@ -98,7 +208,7 @@ async function run() {
 
 
 app.get('/', (req, res) => {
-    res.send("Genius Server is running")
+    res.send("WeSocial Server is running")
 })
 
 app.listen(port , () => {
