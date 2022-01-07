@@ -36,7 +36,10 @@ async function run() {
       console.log("Connected successfully");
       const database = client.db("wesocial");
 
-      /* Collections */
+    /* Collections ______________________*/
+
+    /* Users */
+    const userListCollection = database.collection("userList");
 
     /* Community Articles */
     const communityPostsCollection = database.collection("communityPosts");
@@ -47,17 +50,35 @@ async function run() {
     const userStatusRepliesCollection = database.collection("userStatusReplies");
 
 
-/* _____________________________________________________________ */
+/* ____________________________________________________________________________*/
 
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                    Post Users list on server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
 
+    app.post('/userList', async(req, res) =>{
+    const userList = req.body;
+      const result = await userListCollection.insertOne(userList);
+      console.log(`A document was inserted with the _id: ${result.insertedId}`);
+      res.json(result)
+    })
+
+    /* ::::::::::::::::::::::::::::::::::::::::::::
+                get Users list from server
+    ::::::::::::::::::::::::::::::::::::::::::::::*/
+    app.get('/userList', async(req, res) => {
+        const cursor = userListCollection.find({});
+        const userList = await cursor.toArray();
+        res.send(userList);
+    });
+
+/* _______________________________________________________________________________*/
 
     /* ::::::::::::::::::::::::::::::::::::::::::::
                     Post Articles on server
     ::::::::::::::::::::::::::::::::::::::::::::::*/
     app.post('/communityPosts', async(req, res) =>{
         const communityPosts = req.body;
-    //   console.log("hit the poost api", service);
-
       const result = await communityPostsCollection.insertOne(communityPosts);
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
       res.json(result)
