@@ -175,11 +175,11 @@ async function run() {
 
 
     /* ::::::::::::::::::::::::::::::::::::::::::::
-                    Post Status replies on server
+            Post Status replies on server
     ::::::::::::::::::::::::::::::::::::::::::::::*/
-    app.post('/communityPostsReply', async(req, res) =>{
-        const communityPostsReply = req.body;
-        const result = await communityPostsReplyCollection.insertOne(communityPostsReply);
+    app.post('/userStatusReplies', async(req, res) =>{
+        const userStatusReplies = req.body;
+        const result = await userStatusRepliesCollection.insertOne(userStatusReplies);
         console.log(`A document was inserted with the _id: ${result.insertedId}`);
         res.json(result)
     })
@@ -189,11 +189,11 @@ async function run() {
     /* ::::::::::::::::::::::::::::::::::::::::::::
             get Status replies from server
     ::::::::::::::::::::::::::::::::::::::::::::::*/
-    app.get('/communityPostsReply', async(req, res) => {
+    app.get('/userStatusReplies', async(req, res) => {
 
-        const cursor = communityPostsReplyCollection.find({});
-        const communityPostsReply = await cursor.toArray();
-        res.send(communityPostsReply);
+        const cursor = userStatusRepliesCollection.find({});
+        const userStatusReplies = await cursor.toArray();
+        res.send(userStatusReplies);
 
     });
 
